@@ -1,43 +1,46 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import FeedbackOptions from './FeedbackOptions';
 import Statistics from './Statistics';
 import Section from './Section';
 import Notification from './Notification';
-import s from './App.module.css'
+import s from './App.module.css';
+import { useState } from 'react';
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+export function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const stateMap = {
+    good: setGood,
+    neutral: setNeutral,
+    bad: setBad,
   };
 
-  handleClick = option => {
-    // const { name } = e.target;
-    this.setState(prevState => ({ [option]: prevState[option] + 1 }));
-  };
+  const options = Object.keys(stateMap);
+  const total = countTotalFeedback();
+  const positive = countPositiveFeedbackPercentage();
 
-  countTotalFeedback() {
-    const { good, neutral, bad } = this.state;
+  function countTotalFeedback() {
     return good + neutral + bad;
   }
 
-  countPositiveFeedbackPercentage() {
-    const { good, neutral, bad } = this.state;
+  function countPositiveFeedbackPercentage() {
     return Math.round((good / (good + neutral + bad)) * 100) || 0;
   }
 
-  render() {
-    const options = Object.keys(this.state);
-    const { good, neutral, bad } = this.state;
-    const total = this.countTotalFeedback();
-    const positive = this.countPositiveFeedbackPercentage();
-    return (
-      <div className={s.conteiner}>
-        <Section title="Please leave feedback">
-          <FeedbackOptions options={options} onClick={this.handleClick} />
-        </Section>
-        {total?
+  function handleClick(event) {
+    console.log(event);
+    // const { name } = event.target;
+    stateMap[event](prev => prev + 1);
+  }
+
+  return (
+    <div className={s.conteiner}>
+      <Section title="Please leave feedback">
+        <FeedbackOptions options={options} onClick={handleClick} />
+      </Section>
+      {total ? (
         <Section title="Statistics">
           <Statistics
             good={good}
@@ -46,9 +49,60 @@ export class App extends Component {
             total={total}
             positive={positive}
           />
-        </Section> :
-        <Notification message="There is no feedback"></Notification>}
-      </div>
-    );
-  }
+        </Section>
+      ) : (
+        <Notification message="There is no feedback"></Notification>
+      )}
+    </div>
+  );
 }
+
+// export class App extends Component {
+//   state = {
+//     good: 0,
+//     neutral: 0,
+//     bad: 0,
+//   };
+
+//   handleClick = option => {
+//     // const { name } = e.target;
+//     this.setState(prevState => ({ [option]: prevState[option] + 1 }));
+//   };
+
+//   countTotalFeedback() {
+//     const { good, neutral, bad } = this.state;
+//     return good + neutral + bad;
+//   }
+
+//   countPositiveFeedbackPercentage() {
+//     const { good, neutral, bad } = this.state;
+//     return Math.round((good / (good + neutral + bad)) * 100) || 0;
+//   }
+
+//   render() {
+//     const options = Object.keys(this.state);
+//     const { good, neutral, bad } = this.state;
+//     const total = this.countTotalFeedback();
+//     const positive = this.countPositiveFeedbackPercentage();
+//     return (
+//       <div className={s.conteiner}>
+//         <Section title="Please leave feedback">
+//           <FeedbackOptions options={options} onClick={this.handleClick} />
+//         </Section>
+//         {total ? (
+//           <Section title="Statistics">
+//             <Statistics
+//               good={good}
+//               neutral={neutral}
+//               bad={bad}
+//               total={total}
+//               positive={positive}
+//             />
+//           </Section>
+//         ) : (
+//           <Notification message="There is no feedback"></Notification>
+//         )}
+//       </div>
+//     );
+//   }
+// }
