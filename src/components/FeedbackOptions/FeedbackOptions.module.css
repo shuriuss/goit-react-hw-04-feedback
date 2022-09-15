@@ -1,0 +1,21 @@
+.list {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.item {
+    list-style: none;
+}
+
+
+.button {
+    min-width: 90px;
+    font-size: 14px;
+  line-height: 1.15;
+  padding: 5px;
+  margin-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+
+}
